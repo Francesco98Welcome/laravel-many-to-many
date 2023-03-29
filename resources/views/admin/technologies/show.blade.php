@@ -17,13 +17,13 @@
             <h2>Tecnologie associate</h2>
             @if($technology->projects()->count() > 0)
                 <ul>
-                    @foreach($technology as $technologies)
+                    
                     <li>
-                        <a href="{{ route('admin.projects.show', $project->id)}}">
-                            {{ $project->title }}
+                        <a href="{{ route('admin.projects.show', $technology->id)}}">
+                            {{ $technology->name }}
                         </a>
                     </li>
-                    @endforeach
+                   
                 </ul>
             @else
                 <h3>Nessuna tecnologia associata</h3>
