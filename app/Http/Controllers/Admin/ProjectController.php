@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Project;
-use App\Models\Type;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 
@@ -12,6 +10,11 @@ use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 //use Illuminate\Support\Facades\Mail;
+
+//Models
+use App\Models\Project;
+use App\Models\Type;
+use App\Models\Technology;
 
 
 //Mail
@@ -40,8 +43,9 @@ class ProjectController extends Controller
     {
         $types = Type::all();
 
+        $technologies = Technology::all();
 
-        return view('admin.projects.create', compact('types'));
+        return view('admin.projects.create', compact('types', 'technologies'));
     }
 
     /**
@@ -55,12 +59,20 @@ class ProjectController extends Controller
         $data = $request->validated();
         //dd($request->all());
 
+        // dd($data);
+
         if (array_key_exists('img', $data)) {
             $imgPath = Storage::put('projects', $data['img']);
             $data['img'] = $imgPath;
         }
 
         $newProject = Project::create($data);
+
+        if (array_key_exists('technologies', $data)) {
+            foreach ($data['technologies'] as $technologyId) {
+                $newProject->technologies()->attach($technologyId);
+            }
+        }
 
         //Mail::to('frank@boolean.com')->send(new NewProject($newProject));
 
@@ -89,7 +101,9 @@ class ProjectController extends Controller
     {
         $types = Type::all();
 
-        return view('admin.projects.edit', compact('project', 'types'));
+        $technologies = Technology::all();
+
+        return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -120,6 +134,21 @@ class ProjectController extends Controller
         }
 
         $project->update($data);
+
+        if (array_key_exists('technologies', $data)) {
+            /* foreach ($project->technologies as $technology) {
+                $project->technologies()->detach($technology);
+            }
+            foreach ($data['technologies'] as $technologyId) {
+                $project->technologies()->attach($technologyId);
+            }*/
+            //OPPURE
+            $project->technologies()->sync($data['technologies']);
+        } else {
+            //$project->technologies()->sync([]);
+            //OPPURE
+            $project->technologies()->detach([]);
+        }
 
         //dd($data);
         return redirect()->route('admin.projects.show', $project->id)->with('success', 'Progetto modificato con successo!');

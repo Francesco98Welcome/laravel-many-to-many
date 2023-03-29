@@ -59,6 +59,12 @@
                                        <i class="fa-solid fa-diagram-project"></i> Projects
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.technologies.index' ? 'bg-secondary' : '' }}"
+                                       href="{{route('admin.technologies.index')}}">
+                                       <i class="fa-solid fa-computer"></i> Tecnologie
+                                    </a>
+                                </li>
                             </ul>
 
 

@@ -43,15 +43,28 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="type_id">
-
+                    <label class="form-label">
+                        Technologies
                     </label>
-                    <select name="type_id" id="type_id" class="form-select">
-                        <option value="">Nessun tipo </option>
-                        @foreach ($types as $type)
-                            <option value="{{ $type->id }}" {{ old('type_id') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
-                        @endforeach
-                    </select>
+                    <br>
+
+                   <!-- {{ old('technologies') ? json_encode(old('technologies')) : '[]' }}-->
+                    
+                    @foreach($technologies as $technology)
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" 
+                                   class="form-check-input" 
+                                   name="technologies[]" 
+                                   value="{{ $technology->id }}" 
+                                   {{ in_array($technology->id, old('technologies', [])) ? 'checked' : ''}}
+                                   id="technology-{{$technology->id}}">
+                                   
+                            <label for="technology-{{ $technology->id }}" class="form-check-label">
+                                {{ $technology->name }}
+                            </label>
+                        </div>
+                    @endforeach
+                    
                 </div>
 
                 <div class="mb-3">
